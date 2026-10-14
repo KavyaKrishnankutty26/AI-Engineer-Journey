@@ -1,0 +1,15 @@
+Python is a programming language used for many applications.
+
+Python is popular in data engineering because it can work with
+large amounts of data and many data processing tools.
+
+Python is also widely used in artificial intelligence and machine
+learning.
+
+LangChain is a framework used to build applications powered by
+large language models.
+
+RAG stands for Retrieval-Augmented Generation.
+
+RAG allows an AI application to retrieve relevant information
+from external documents before generating an answer
