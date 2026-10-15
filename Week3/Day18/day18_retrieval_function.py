@@ -7,9 +7,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 
 
-# --------------------------------------------------
-# 1. Load the document
-# --------------------------------------------------
+
+#Load the document
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -18,9 +17,9 @@ text = file_path.read_text(
 )
 
 
-# --------------------------------------------------
-# 2. Split the document into chunks
-# --------------------------------------------------
+
+#Split the document into chunks
+
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=100,
@@ -32,9 +31,9 @@ chunks = splitter.split_text(text)
 print("Number of chunks:", len(chunks))
 
 
-# --------------------------------------------------
-# 3. Convert chunks into Document objects
-# --------------------------------------------------
+
+#Convert chunks into Document objects
+
 
 documents = []
 
@@ -51,18 +50,16 @@ for i, chunk in enumerate(chunks, start=1):
     documents.append(document)
 
 
-# --------------------------------------------------
-# 4. Create the embedding model
-# --------------------------------------------------
+
+#Create the embedding model
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
 )
 
 
-# --------------------------------------------------
-# 5. Create embeddings for documents
-# --------------------------------------------------
+
+#Create embeddings for documents
 
 embeddings = embedding_model.encode(
     [
@@ -72,9 +69,8 @@ embeddings = embedding_model.encode(
 )
 
 
-# --------------------------------------------------
-# 6. Create FAISS index
-# --------------------------------------------------
+
+#Create FAISS index
 
 dimension = embeddings.shape[1]
 
@@ -87,9 +83,8 @@ index.add(
 print("Vectors stored in FAISS:", index.ntotal)
 
 
-# --------------------------------------------------
-# 7. Create retrieval function
-# --------------------------------------------------
+
+#Create retrieval function
 
 def retrieve_documents(question):
 
@@ -131,9 +126,8 @@ def retrieve_documents(question):
     return relevant_documents
 
 
-# --------------------------------------------------
-# 8. Get user question
-# --------------------------------------------------
+
+#Get user question
 
 question = input(
     "\nAsk a question about the document: "
@@ -145,18 +139,18 @@ if not question:
     exit()
 
 
-# --------------------------------------------------
-# 9. Retrieve relevant documents
-# --------------------------------------------------
+
+# Retrieve relevant documents
+
 
 retrieved_documents = retrieve_documents(
     question
 )
 
 
-# --------------------------------------------------
-# 10. Display retrieved documents
-# --------------------------------------------------
+
+# Display retrieved documents
+
 
 print("\nRelevant documents:")
 
