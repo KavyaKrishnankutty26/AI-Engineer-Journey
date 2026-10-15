@@ -9,27 +9,26 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 
 
-# --------------------------------------------------
-# 1. Load environment variables
-# --------------------------------------------------
+
+#Load environment variables
+
 
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 
 
-# --------------------------------------------------
-# 2. Create embedding model
-# --------------------------------------------------
+
+#Create embedding model
+
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
 )
 
 
-# --------------------------------------------------
-# 3. Load document
-# --------------------------------------------------
+
+#Load document
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -38,9 +37,9 @@ text = file_path.read_text(
 )
 
 
-# --------------------------------------------------
-# 4. Create chunks
-# --------------------------------------------------
+
+#Create chunks
+
 
 chunks = [
     chunk.strip()
@@ -51,18 +50,18 @@ chunks = [
 print("Number of chunks:", len(chunks))
 
 
-# --------------------------------------------------
-# 5. Create embeddings for chunks
-# --------------------------------------------------
+
+# Create embeddings for chunks
+
 
 chunk_embeddings = embedding_model.encode(
     chunks
 )
 
 
-# --------------------------------------------------
-# 6. Create FAISS index
-# --------------------------------------------------
+
+#Create FAISS index
+
 
 dimension = chunk_embeddings.shape[1]
 
@@ -75,9 +74,8 @@ index.add(
 print("Vectors stored in FAISS:", index.ntotal)
 
 
-# --------------------------------------------------
-# 7. Get user question
-# --------------------------------------------------
+
+#Get user question
 
 question = input(
     "\nAsk a question about the document: "
@@ -89,29 +87,28 @@ if not question:
     exit()
 
 
-# --------------------------------------------------
-# 8. Convert question into embedding
-# --------------------------------------------------
+
+#Convert question into embedding
+
 
 question_embedding = embedding_model.encode(
     [question]
 )
 
 
-# --------------------------------------------------
-# 9. Search FAISS
-# --------------------------------------------------
 
-#  Retrieve 4 candidates instead of 2
+#Search FAISS
+
+
+# Retrieve 4 candidates instead of 2
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
     k=4
 )
 
 
-# --------------------------------------------------
-# 10. Apply relevance threshold
-# --------------------------------------------------
+
+# Apply relevance threshold
 
 #  Maximum distance we will accept
 threshold = 1.0
@@ -144,9 +141,8 @@ for distance, index_number in zip(
         )
 
 
-# --------------------------------------------------
-# 11. Display accepted chunks
-# --------------------------------------------------
+
+# Display accepted chunks
 
 print("\nRelevant chunks:")
 
@@ -161,27 +157,25 @@ else:
     print("No sufficiently relevant chunks found.")
 
 
-# --------------------------------------------------
-# 12. Create context
-# --------------------------------------------------
+
+# Create context
+
 
 context = "\n\n".join(
     retrieved_chunks
 )
 
 
-# --------------------------------------------------
-# 13. Create Gemini model
-# --------------------------------------------------
+
+# Create Gemini model
 
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite"
 )
 
 
-# --------------------------------------------------
-# 14. Create RAG prompt
-# --------------------------------------------------
+
+# Create RAG prompt
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -215,16 +209,15 @@ Question:
 )
 
 
-# --------------------------------------------------
-# 15. Create chain
-# --------------------------------------------------
+
+#Create chain
+
 
 chain = prompt | model
 
 
-# --------------------------------------------------
-# 16. Send context + question to Gemini
-# --------------------------------------------------
+
+# Send context + question to Gemini
 
 response = chain.invoke(
     {
@@ -234,9 +227,9 @@ response = chain.invoke(
 )
 
 
-# --------------------------------------------------
-# 17. Display final answer
-# --------------------------------------------------
+
+# Display final answer
+
 
 print("\nAI Answer:")
 print(response.content)
