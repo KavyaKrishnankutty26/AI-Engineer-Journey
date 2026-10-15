@@ -12,23 +12,23 @@ model = ChatGoogleGenerativeAI(
 )
 
 
-# NEW: Import message types
+#Import message types
 from langchain_core.messages import SystemMessage, HumanMessage
 
 
-# NEW: Create a system message
+#Create a system message
 system_message = SystemMessage(
     content="You are a beginner-friendly Python tutor."
 )
 
 
-# NEW: Create a human message
+#Create a human message
 human_message = HumanMessage(
     content="What is a Python list?"
 )
 
 
-# NEW: Send multiple messages to Gemini
+#Send multiple messages to Gemini
 response = model.invoke(
     [
         system_message,
