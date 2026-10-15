@@ -4,9 +4,8 @@ from pathlib import Path
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-# --------------------------------------------------
-# 1. Load the document
-# --------------------------------------------------
+
+#Load the document
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -15,9 +14,9 @@ text = file_path.read_text(
 )
 
 
-# --------------------------------------------------
-# 2. Create the text splitter
-# --------------------------------------------------
+
+#Create the text splitter
+
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=100,
@@ -25,18 +24,17 @@ splitter = RecursiveCharacterTextSplitter(
 )
 
 
-# --------------------------------------------------
-# 3. Split the document into chunks
-# --------------------------------------------------
+
+# Split the document into chunks
+
 
 chunks = splitter.split_text(text)
 
 print("Number of chunks:", len(chunks))
 
 
-# --------------------------------------------------
-# 4. Add metadata to each chunk
-# --------------------------------------------------
+
+# Add metadata to each chunk
 
 documents = []
 
@@ -53,9 +51,8 @@ for i, chunk in enumerate(chunks, start=1):
     documents.append(document)
 
 
-# --------------------------------------------------
-# 5. Display chunks and metadata
-# --------------------------------------------------
+
+#Display chunks and metadata
 
 for document in documents:
 
