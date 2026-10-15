@@ -9,16 +9,14 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 
 
-# --------------------------------------------------
-# 1. Find the document
-# --------------------------------------------------
+
+# Find the document
 
 file_path = Path(__file__).parent / "Document.txt"
 
 
-# --------------------------------------------------
-# 2. Load the document
-# --------------------------------------------------
+
+# Load the document
 
 loader = TextLoader(
     str(file_path),
@@ -30,9 +28,8 @@ documents = loader.load()
 print("Documents loaded:", len(documents))
 
 
-# --------------------------------------------------
-# 3. Create the text splitter
-# --------------------------------------------------
+
+# Create the text splitter
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=100,
@@ -40,9 +37,9 @@ splitter = RecursiveCharacterTextSplitter(
 )
 
 
-# --------------------------------------------------
-# 4. Split Documents into chunks
-# --------------------------------------------------
+
+# Split Documents into chunks
+
 
 chunks = splitter.split_documents(
     documents
@@ -51,18 +48,17 @@ chunks = splitter.split_documents(
 print("Chunks created:", len(chunks))
 
 
-# --------------------------------------------------
-# 5. Create the embedding model
-# --------------------------------------------------
+
+# Create the embedding model
+
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
 )
 
 
-# --------------------------------------------------
-# 6. Get text from every chunk
-# --------------------------------------------------
+
+#  Get text from every chunk
 
 chunk_texts = [
     chunk.page_content
@@ -70,18 +66,17 @@ chunk_texts = [
 ]
 
 
-# --------------------------------------------------
-# 7. Create embeddings for the chunks
-# --------------------------------------------------
+
+# Create embeddings for the chunks
+
 
 embeddings = embedding_model.encode(
     chunk_texts
 )
 
 
-# --------------------------------------------------
-# 8. Create FAISS index
-# --------------------------------------------------
+
+# Create FAISS index
 
 dimension = embeddings.shape[1]
 
@@ -90,9 +85,8 @@ index = faiss.IndexFlatL2(
 )
 
 
-# --------------------------------------------------
-# 9. Store embeddings in FAISS
-# --------------------------------------------------
+
+# Store embeddings in FAISS
 
 index.add(
     np.array(embeddings).astype("float32")
@@ -101,18 +95,17 @@ index.add(
 print("Vectors stored in FAISS:", index.ntotal)
 
 
-# --------------------------------------------------
-# 10. Get user's question
-# --------------------------------------------------
+
+#  Get user's question
 
 question = input(
     "\nAsk a question about the document: "
 ).strip()
 
 
-# --------------------------------------------------
-# 11. Validate question
-# --------------------------------------------------
+
+#  Validate question
+
 
 if not question:
 
@@ -121,18 +114,16 @@ if not question:
     exit()
 
 
-# --------------------------------------------------
-# 12. Convert question into an embedding
-# --------------------------------------------------
+
+#  Convert question into an embedding
 
 question_embedding = embedding_model.encode(
     [question]
 )
 
 
-# --------------------------------------------------
-# 13. Search FAISS
-# --------------------------------------------------
+
+#  Search FAISS
 
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
@@ -140,9 +131,8 @@ distances, indices = index.search(
 )
 
 
-# --------------------------------------------------
-# 14. Display retrieved Documents
-# --------------------------------------------------
+
+#  Display retrieved Documents
 
 print("\nRetrieved documents:")
 

@@ -6,16 +6,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 
 
-# --------------------------------------------------
-# 1. Find the document
-# --------------------------------------------------
+
+# Find the document
+
 
 file_path = Path(__file__).parent / "Document.txt"
 
 
-# --------------------------------------------------
-# 2. Load the document
-# --------------------------------------------------
+
+# Load the document
 
 loader = TextLoader(
     str(file_path),
@@ -27,9 +26,9 @@ documents = loader.load()
 print("Documents loaded:", len(documents))
 
 
-# --------------------------------------------------
-# 3. Create the text splitter
-# --------------------------------------------------
+
+# Create the text splitter
+
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=100,
@@ -37,9 +36,9 @@ splitter = RecursiveCharacterTextSplitter(
 )
 
 
-# --------------------------------------------------
-# 4. Split Documents into smaller Documents
-# --------------------------------------------------
+
+# Split Documents into smaller Documents
+
 
 chunks = splitter.split_documents(
     documents
@@ -48,18 +47,18 @@ chunks = splitter.split_documents(
 print("Chunks created:", len(chunks))
 
 
-# --------------------------------------------------
-# 5. Create the embedding model
-# --------------------------------------------------
+
+# Create the embedding model
+
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
 )
 
 
-# --------------------------------------------------
-# 6. Get the text from every chunk
-# --------------------------------------------------
+
+# Get the text from every chunk
+
 
 chunk_texts = [
     chunk.page_content
@@ -67,18 +66,17 @@ chunk_texts = [
 ]
 
 
-# --------------------------------------------------
-# 7. Create embeddings
-# --------------------------------------------------
+
+# Create embeddings
 
 embeddings = embedding_model.encode(
     chunk_texts
 )
 
 
-# --------------------------------------------------
-# 8. Display embedding information
-# --------------------------------------------------
+
+# Display embedding information
+
 
 print("\nEmbedding shape:")
 print(embeddings.shape)

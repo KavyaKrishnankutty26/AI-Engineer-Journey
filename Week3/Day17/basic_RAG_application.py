@@ -10,7 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 
 
-#Load environment variables
+#  Load environment variables
 
 
 load_dotenv()
@@ -19,7 +19,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 
 
 
-#Create the embedding model
+#  Create the embedding model
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
@@ -27,7 +27,7 @@ embedding_model = SentenceTransformer(
 
 
 
-#Load the document
+# Load the document
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -37,7 +37,7 @@ text = file_path.read_text(
 
 
 
-#Split the document into simple chunks
+# Split the document into simple chunks
 
 
 chunks = [
@@ -51,7 +51,7 @@ print("Number of chunks:", len(chunks))
 
 
 
-#Create embeddings for the chunks
+# Create embeddings for the chunks
 
 
 chunk_embeddings = embedding_model.encode(
@@ -60,7 +60,7 @@ chunk_embeddings = embedding_model.encode(
 
 
 
-#Create FAISS index
+# Create FAISS index
 
 
 dimension = chunk_embeddings.shape[1]
@@ -69,7 +69,7 @@ index = faiss.IndexFlatL2(dimension)
 
 
 
-#Store embeddings in FAISS
+# Store embeddings in FAISS
 
 
 index.add(
@@ -78,7 +78,8 @@ index.add(
 
 
 
-#Get user's question
+# Get user's question
+
 
 question = input(
     "\nAsk a question about the document: "
@@ -91,7 +92,8 @@ if not question:
 
 
 
-#Convert question into an embedding
+# Convert question into an embedding
+
 
 question_embedding = embedding_model.encode(
     [question]
@@ -99,7 +101,8 @@ question_embedding = embedding_model.encode(
 
 
 
-#Retrieve the most relevant chunks
+# Retrieve the most relevant chunks
+
 
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
@@ -108,7 +111,8 @@ distances, indices = index.search(
 
 
 
-#Build the context
+# Build the context
+
 
 retrieved_chunks = []
 
@@ -129,7 +133,8 @@ print(context)
 
 
 
-#Create Gemini model
+# Create Gemini model
+
 
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite"
@@ -137,7 +142,7 @@ model = ChatGoogleGenerativeAI(
 
 
 
-#Create RAG prompt
+# Create RAG prompt
 
 
 prompt = ChatPromptTemplate.from_messages(
@@ -173,13 +178,13 @@ Question:
 
 
 
-#Create the chain
-
+# Create the chain
 
 chain = prompt | model
 
 
-#Send context + question to Gemini
+
+# Send context + question to Gemini
 
 
 response = chain.invoke(
@@ -191,7 +196,8 @@ response = chain.invoke(
 
 
 
-#Display the final answer
+# Display the final answer
+
 
 print("\nAI Answer:")
 print(response.content)

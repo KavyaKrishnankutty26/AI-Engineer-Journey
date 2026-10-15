@@ -5,16 +5,15 @@ from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-# --------------------------------------------------
-# 1. Find the document
-# --------------------------------------------------
+
+# Find the document
 
 file_path = Path(__file__).parent / "Document.txt"
 
 
-# --------------------------------------------------
-# 2. Load the document
-# --------------------------------------------------
+
+# Load the document
+
 
 loader = TextLoader(
     str(file_path),
@@ -27,9 +26,8 @@ documents = loader.load()
 print("Documents loaded:", len(documents))
 
 
-# --------------------------------------------------
-# 3. Create the text splitter
-# --------------------------------------------------
+
+# Create the text splitter
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=250,
@@ -37,9 +35,8 @@ splitter = RecursiveCharacterTextSplitter(
 )
 
 
-# --------------------------------------------------
-# 4. Split the Documents into smaller Documents
-# --------------------------------------------------
+
+# Split the Documents into smaller Documents
 
 chunks = splitter.split_documents(
     documents
@@ -49,9 +46,9 @@ chunks = splitter.split_documents(
 print("Chunks created:", len(chunks))
 
 
-# --------------------------------------------------
-# 5. Display the chunks
-# --------------------------------------------------
+
+# Display the chunks
+
 
 for i, chunk in enumerate(chunks, start=1):
 

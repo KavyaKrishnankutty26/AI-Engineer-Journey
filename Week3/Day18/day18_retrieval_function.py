@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 
 
 
-#Load the document
+# Load the document
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -18,7 +18,7 @@ text = file_path.read_text(
 
 
 
-#Split the document into chunks
+# Split the document into chunks
 
 
 splitter = RecursiveCharacterTextSplitter(
@@ -32,7 +32,7 @@ print("Number of chunks:", len(chunks))
 
 
 
-#Convert chunks into Document objects
+# Convert chunks into Document objects
 
 
 documents = []
@@ -51,7 +51,8 @@ for i, chunk in enumerate(chunks, start=1):
 
 
 
-#Create the embedding model
+# Create the embedding model
+
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
@@ -59,7 +60,7 @@ embedding_model = SentenceTransformer(
 
 
 
-#Create embeddings for documents
+# Create embeddings for documents
 
 embeddings = embedding_model.encode(
     [
@@ -70,7 +71,7 @@ embeddings = embedding_model.encode(
 
 
 
-#Create FAISS index
+# Create FAISS index
 
 dimension = embeddings.shape[1]
 
@@ -84,7 +85,7 @@ print("Vectors stored in FAISS:", index.ntotal)
 
 
 
-#Create retrieval function
+# Create retrieval function
 
 def retrieve_documents(question):
 
@@ -127,7 +128,8 @@ def retrieve_documents(question):
 
 
 
-#Get user question
+# Get user question
+
 
 question = input(
     "\nAsk a question about the document: "
@@ -140,8 +142,7 @@ if not question:
 
 
 
-# Retrieve relevant documents
-
+#  Retrieve relevant documents
 
 retrieved_documents = retrieve_documents(
     question
@@ -149,7 +150,7 @@ retrieved_documents = retrieve_documents(
 
 
 
-# Display retrieved documents
+#  Display retrieved documents
 
 
 print("\nRelevant documents:")

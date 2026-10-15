@@ -5,7 +5,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 
-#Load the document
+# Load the document
+
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -15,7 +16,7 @@ text = file_path.read_text(
 
 
 
-#Create the text splitter
+# Create the text splitter
 
 
 splitter = RecursiveCharacterTextSplitter(
@@ -52,7 +53,8 @@ for i, chunk in enumerate(chunks, start=1):
 
 
 
-#Display chunks and metadata
+#  Display chunks and metadata
+
 
 for document in documents:
 

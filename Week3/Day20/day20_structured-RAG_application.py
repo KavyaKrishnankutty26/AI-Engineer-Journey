@@ -14,16 +14,15 @@ from langchain_core.prompts import ChatPromptTemplate
 from sentence_transformers import SentenceTransformer
 
 
-# --------------------------------------------------
-# 1. Load environment variables
-# --------------------------------------------------
+
+# Load environment variables
 
 load_dotenv()
 
 
-# --------------------------------------------------
-# 2. Load documents
-# --------------------------------------------------
+
+# Load documents
+
 
 def load_documents(file_path):
 
@@ -37,9 +36,8 @@ def load_documents(file_path):
     return documents
 
 
-# --------------------------------------------------
-# 3. Create chunks
-# --------------------------------------------------
+
+# Create chunks
 
 def create_chunks(documents):
 
@@ -55,9 +53,9 @@ def create_chunks(documents):
     return chunks
 
 
-# --------------------------------------------------
-# 4. Create embeddings
-# --------------------------------------------------
+
+# Create embeddings
+
 
 def create_embeddings(chunks):
 
@@ -77,9 +75,8 @@ def create_embeddings(chunks):
     return embedding_model, embeddings
 
 
-# --------------------------------------------------
-# 5. Create FAISS index
-# --------------------------------------------------
+
+# Create FAISS index
 
 def create_vector_store(embeddings):
 
@@ -96,9 +93,8 @@ def create_vector_store(embeddings):
     return index
 
 
-# --------------------------------------------------
-# 6. Retrieve relevant documents
-# --------------------------------------------------
+
+# Retrieve relevant documents
 
 def retrieve_documents(
     question,
@@ -136,9 +132,9 @@ def retrieve_documents(
     return relevant_documents
 
 
-# --------------------------------------------------
-# 7. Generate answer
-# --------------------------------------------------
+
+# Generate answer
+
 
 def generate_answer(
     question,
@@ -194,9 +190,8 @@ Question:
     return response
 
 
-# --------------------------------------------------
-# 8. Main application
-# --------------------------------------------------
+
+# Main application
 
 def main():
 
@@ -301,9 +296,9 @@ def main():
     print(response.content)
 
 
-# --------------------------------------------------
-# 9. Run application
-# --------------------------------------------------
+
+# Run application
+
 
 if __name__ == "__main__":
     main()

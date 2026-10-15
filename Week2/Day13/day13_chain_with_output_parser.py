@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 
-#Import output parser
+# Import output parser
 from langchain_core.output_parsers import StrOutputParser
 
 
@@ -46,11 +46,11 @@ Explain the answer clearly and give a simple example.
 )
 
 
-#Create the output parser
+#  Create the output parser
 parser = StrOutputParser()
 
 
-#Connect prompt → model → parser
+#  Connect prompt → model → parser
 chain = prompt | model | parser
 
 
@@ -70,6 +70,6 @@ response = chain.invoke(
 )
 
 
-#The parser returns plain text
+# The parser returns plain text
 print("\nGemini:")
 print(response)

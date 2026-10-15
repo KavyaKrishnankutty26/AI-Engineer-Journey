@@ -9,8 +9,7 @@ from sentence_transformers import SentenceTransformer
 
 
 
-#Load the document
-
+# Load the document
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -21,6 +20,7 @@ text = file_path.read_text(
 
 
 # Split the document into chunks
+
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=100,
@@ -33,7 +33,8 @@ print("Number of chunks:", len(chunks))
 
 
 
-#Convert chunks into Document objects
+# Convert chunks into Document objects
+
 
 documents = []
 
@@ -51,7 +52,7 @@ for i, chunk in enumerate(chunks, start=1):
 
 
 
-#Create embeddings
+# Create embeddings
 
 
 embedding_model = SentenceTransformer(
@@ -80,7 +81,6 @@ print("Vectors stored in FAISS:", index.ntotal)
 
 
 # Ask a question
--
 
 question = input(
     "\nAsk a question about the document: "
@@ -103,7 +103,6 @@ question_embedding = embedding_model.encode(
 
 # Search FAISS
 
-
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
     k=2
@@ -111,7 +110,8 @@ distances, indices = index.search(
 
 
 
-# Retrieve the Documents
+#  Retrieve the Documents
+
 
 print("\nRetrieved documents:")
 

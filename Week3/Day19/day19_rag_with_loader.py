@@ -14,23 +14,22 @@ from langchain_core.prompts import ChatPromptTemplate
 from sentence_transformers import SentenceTransformer
 
 
-# --------------------------------------------------
-# 1. Load environment variables
-# --------------------------------------------------
+
+#  Load environment variables
+
 
 load_dotenv()
 
 
-# --------------------------------------------------
-# 2. Find the document
-# --------------------------------------------------
+
+# Find the document
 
 file_path = Path(__file__).parent / "Document.txt"
 
 
-# --------------------------------------------------
-# 3. Load the document
-# --------------------------------------------------
+
+# Load the document
+
 
 loader = TextLoader(
     str(file_path),
@@ -42,9 +41,9 @@ documents = loader.load()
 print("Documents loaded:", len(documents))
 
 
-# --------------------------------------------------
-# 4. Create the text splitter
-# --------------------------------------------------
+
+# Create the text splitter
+
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=250,
@@ -52,9 +51,9 @@ splitter = RecursiveCharacterTextSplitter(
 )
 
 
-# --------------------------------------------------
-# 5. Split Documents into chunks
-# --------------------------------------------------
+
+# Split Documents into chunks
+
 
 chunks = splitter.split_documents(
     documents
@@ -63,18 +62,18 @@ chunks = splitter.split_documents(
 print("Chunks created:", len(chunks))
 
 
-# --------------------------------------------------
-# 6. Create the embedding model
-# --------------------------------------------------
+
+# Create the embedding model
+
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
 )
 
 
-# --------------------------------------------------
-# 7. Get text from every chunk
-# --------------------------------------------------
+
+# Get text from every chunk
+
 
 chunk_texts = [
     chunk.page_content
@@ -82,18 +81,17 @@ chunk_texts = [
 ]
 
 
-# --------------------------------------------------
-# 8. Create embeddings
-# --------------------------------------------------
+
+# Create embeddings
 
 embeddings = embedding_model.encode(
     chunk_texts
 )
 
 
-# --------------------------------------------------
-# 9. Create FAISS index
-# --------------------------------------------------
+
+# Create FAISS index
+
 
 dimension = embeddings.shape[1]
 
@@ -102,9 +100,9 @@ index = faiss.IndexFlatL2(
 )
 
 
-# --------------------------------------------------
-# 10. Store embeddings
-# --------------------------------------------------
+
+# Store embeddings
+
 
 index.add(
     np.array(embeddings).astype("float32")
@@ -113,18 +111,18 @@ index.add(
 print("Vectors stored in FAISS:", index.ntotal)
 
 
-# --------------------------------------------------
-# 11. Get user's question
-# --------------------------------------------------
+
+# Get user's question
+
 
 question = input(
     "\nAsk a question about the document: "
 ).strip()
 
 
-# --------------------------------------------------
-# 12. Validate question
-# --------------------------------------------------
+
+# Validate question
+
 
 if not question:
 
@@ -133,18 +131,18 @@ if not question:
     exit()
 
 
-# --------------------------------------------------
-# 13. Convert question into an embedding
-# --------------------------------------------------
+
+# Convert question into an embedding
+
 
 question_embedding = embedding_model.encode(
     [question]
 )
 
 
-# --------------------------------------------------
-# 14. Search FAISS
-# --------------------------------------------------
+
+#  Search FAISS
+
 
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
@@ -152,9 +150,10 @@ distances, indices = index.search(
 )
 
 
-# --------------------------------------------------
-# 15. Collect retrieved Documents
-# --------------------------------------------------
+
+
+#  Collect retrieved Documents
+
 
 retrieved_documents = []
 
@@ -168,9 +167,9 @@ for distance, index_number in zip(
     retrieved_documents.append(document)
 
 
-# --------------------------------------------------
-# 16. Create context for Gemini
-# --------------------------------------------------
+
+# Create context for Gemini
+
 
 context = "\n\n".join(
     document.page_content
@@ -182,18 +181,17 @@ print("\nRetrieved context:")
 print(context)
 
 
-# --------------------------------------------------
-# 17. Create Gemini model
-# --------------------------------------------------
+
+# Create Gemini model
+
 
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite"
 )
 
 
-# --------------------------------------------------
-# 18. Create RAG prompt
-# --------------------------------------------------
+
+# Create RAG prompt
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -227,16 +225,15 @@ Question:
 )
 
 
-# --------------------------------------------------
-# 19. Create the chain
-# --------------------------------------------------
+
+# Create the chain
 
 chain = prompt | model
 
 
-# --------------------------------------------------
-# 20. Ask Gemini
-# --------------------------------------------------
+
+# Ask Gemini
+
 
 response = chain.invoke(
     {
@@ -246,9 +243,8 @@ response = chain.invoke(
 )
 
 
-# --------------------------------------------------
-# 21. Display the final answer
-# --------------------------------------------------
+
+# Display the final answer
 
 print("\nAI Answer:")
 print(response.content)

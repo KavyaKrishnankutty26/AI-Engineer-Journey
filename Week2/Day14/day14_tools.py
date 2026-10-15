@@ -3,15 +3,14 @@ import sys
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 
-#Import messages needed for tool calling
+# Import messages needed for tool calling
 from langchain_core.messages import HumanMessage, ToolMessage
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 
-#Load environment variables
-
+# Load environment variables
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -23,7 +22,7 @@ print("API key loaded:", bool(api_key))
 
 
 
-#Create the Gemini model
+# Create the Gemini model
 
 
 model = ChatGoogleGenerativeAI(
@@ -31,9 +30,7 @@ model = ChatGoogleGenerativeAI(
 )
 
 
-
 #Create a LangChain tool
-
 
 @tool
 def add_numbers(a: int, b: int) -> int:
@@ -51,7 +48,7 @@ model_with_tools = model.bind_tools(
 
 
 
-#Test the tool locally
+# Test the tool locally
 
 
 local_result = add_numbers.invoke(
@@ -66,7 +63,7 @@ print(local_result)
 
 
 
-#Create the user's message
+# Create the user's message
 
 
 messages = [
@@ -77,7 +74,7 @@ messages = [
 
 
 
-#Ask Gemini to use the tool
+# Ask Gemini to use the tool
 
 
 try:
@@ -101,8 +98,9 @@ try:
 
 
     
-    #Check if Gemini requested a tool
-   
+    # Check if Gemini requested a tool
+    
+
     if response.tool_calls:
 
         tool_call = response.tool_calls[0]
@@ -115,7 +113,7 @@ try:
 
 
         
-        #Execute the requested tool
+        # Execute the requested tool
         
         tool_result = add_numbers.invoke(
             tool_call["args"]
@@ -125,9 +123,10 @@ try:
         print(tool_result)
 
 
-         
-        #Create a ToolMessage
         
+        # Create a ToolMessage
+        
+
         tool_message = ToolMessage(
             content=str(tool_result),
             tool_call_id=tool_call["id"]
@@ -137,7 +136,7 @@ try:
 
 
         
-        #Send the tool result back to Gemini
+        # Send the tool result back to Gemini
         
 
         final_response = model_with_tools.invoke(

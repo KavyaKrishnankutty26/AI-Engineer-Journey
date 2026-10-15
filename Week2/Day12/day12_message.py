@@ -8,7 +8,7 @@ load_dotenv()
 
 # Create Gemini model through LangChain
 model = ChatGoogleGenerativeAI(
-    model="gemini-3.6-flash"
+    model="gemini-3.1-flash-lite"
 )
 
 

@@ -34,7 +34,7 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 
-# Connect the prompt and model into a chain
+#Connect the prompt and model into a chain
 chain = prompt | model
 
 
@@ -42,7 +42,7 @@ chain = prompt | model
 topic = input("Enter a Python topic: ")
 
 
-#Run the complete chain
+# Run the complete chain
 response = chain.invoke(
     {
         "topic": topic

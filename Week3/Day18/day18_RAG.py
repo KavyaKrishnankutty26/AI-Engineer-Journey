@@ -10,8 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 
 
-#Load environment variables
-
+#  Load environment variables
 
 load_dotenv()
 
@@ -19,8 +18,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 
 
 
-#Create embedding model
-
+# Create embedding model
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
@@ -28,7 +26,7 @@ embedding_model = SentenceTransformer(
 
 
 
-#Load document
+# Load document
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -38,7 +36,7 @@ text = file_path.read_text(
 
 
 
-#Create chunks
+# Create chunks
 
 
 chunks = [
@@ -51,7 +49,7 @@ print("Number of chunks:", len(chunks))
 
 
 
-# Create embeddings for chunks
+#  Create embeddings for chunks
 
 
 chunk_embeddings = embedding_model.encode(
@@ -60,7 +58,7 @@ chunk_embeddings = embedding_model.encode(
 
 
 
-#Create FAISS index
+# Create FAISS index
 
 
 dimension = chunk_embeddings.shape[1]
@@ -75,7 +73,8 @@ print("Vectors stored in FAISS:", index.ntotal)
 
 
 
-#Get user question
+# Get user question
+
 
 question = input(
     "\nAsk a question about the document: "
@@ -88,7 +87,7 @@ if not question:
 
 
 
-#Convert question into embedding
+# Convert question into embedding
 
 
 question_embedding = embedding_model.encode(
@@ -97,10 +96,10 @@ question_embedding = embedding_model.encode(
 
 
 
-#Search FAISS
+# Search FAISS
 
 
-# Retrieve 4 candidates instead of 2
+#  Retrieve 4 candidates instead of 2
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
     k=4
@@ -169,6 +168,7 @@ context = "\n\n".join(
 
 # Create Gemini model
 
+
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite"
 )
@@ -176,6 +176,7 @@ model = ChatGoogleGenerativeAI(
 
 
 # Create RAG prompt
+
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -210,7 +211,7 @@ Question:
 
 
 
-#Create chain
+# Create chain
 
 
 chain = prompt | model
@@ -218,6 +219,7 @@ chain = prompt | model
 
 
 # Send context + question to Gemini
+
 
 response = chain.invoke(
     {
@@ -229,8 +231,6 @@ response = chain.invoke(
 
 
 # Display final answer
-
-
 print("\nAI Answer:")
 print(response.content)
 

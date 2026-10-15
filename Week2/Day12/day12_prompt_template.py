@@ -1,4 +1,3 @@
-
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -6,11 +5,11 @@ import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-#Import ChatPromptTemplate
+#  Import ChatPromptTemplate
 from langchain_core.prompts import ChatPromptTemplate
 
 
-#Load API key
+# Load API key
 load_dotenv()
 
 
@@ -20,7 +19,7 @@ model = ChatGoogleGenerativeAI(
 )
 
 
-#Create a reusable prompt template
+# Create a reusable prompt template
 prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -41,7 +40,7 @@ prompt = ChatPromptTemplate.from_messages(
 topic = input("Enter a Python topic: ")
 
 
-#Fill the {topic} variable
+# Fill the {topic} variable
 messages = prompt.invoke(
     {
         "topic": topic
@@ -49,10 +48,10 @@ messages = prompt.invoke(
 )
 
 
-#Send the generated messages to Gemini
+# Send the generated messages to Gemini
 response = model.invoke(messages)
 
 
-#Display the AI response
+# Display the AI response
 print("\nGemini:")
 print(response.text)
