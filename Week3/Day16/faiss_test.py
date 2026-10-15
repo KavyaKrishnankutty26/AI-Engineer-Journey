@@ -4,16 +4,15 @@ import faiss
 import numpy as np
 
 
-# --------------------------------------------------
-# 1. Load the embedding model
-# --------------------------------------------------
+
+#Load the embedding model
+
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
-# --------------------------------------------------
-# 2. Create some example documents
-# --------------------------------------------------
+
+#Create some example documents
 
 texts = [
     "Python is widely used in data engineering.",
@@ -23,9 +22,9 @@ texts = [
 ]
 
 
-# --------------------------------------------------
-# 3. Convert the texts into embeddings
-# --------------------------------------------------
+
+#Convert the texts into embeddings
+
 
 embeddings = model.encode(texts)
 
@@ -33,18 +32,17 @@ print("Number of texts:", len(texts))
 print("Embedding shape:", embeddings.shape)
 
 
-# --------------------------------------------------
-# 4. Create a FAISS index
-# --------------------------------------------------
+
+#Create a FAISS index
+
 
 dimension = embeddings.shape[1]
 
 index = faiss.IndexFlatL2(dimension)
 
 
-# --------------------------------------------------
-# 5. Add embeddings to FAISS
-# --------------------------------------------------
+
+#Add embeddings to FAISS
 
 index.add(
     np.array(embeddings).astype("float32")
@@ -53,25 +51,23 @@ index.add(
 print("Vectors stored in FAISS:", index.ntotal)
 
 
-# --------------------------------------------------
-# 6. Create a user question
-# --------------------------------------------------
+
+#Create a user question
 
 question = "How is Python useful for working with data?"
 
 
-# --------------------------------------------------
-# 7. Convert the question into an embedding
-# --------------------------------------------------
+
+#Convert the question into an embedding
 
 question_embedding = model.encode(
     [question]
 )
 
 
-# --------------------------------------------------
-# 8. Search FAISS
-# --------------------------------------------------
+
+#Search FAISS
+
 
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
@@ -79,9 +75,8 @@ distances, indices = index.search(
 )
 
 
-# --------------------------------------------------
-# 9. Display the results
-# --------------------------------------------------
+
+#Display the results
 
 print("\nQuestion:")
 print(question)
