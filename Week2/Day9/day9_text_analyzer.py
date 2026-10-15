@@ -6,9 +6,9 @@ from pydantic import BaseModel
 from typing import Literal
 
 
-# --------------------------------------------------
-# 1. Load environment variables
-# --------------------------------------------------
+
+#Load environment variables
+
 
 env_path = Path(__file__).resolve().parents[2] / ".env"
 load_dotenv(env_path)
@@ -18,9 +18,9 @@ api_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 
 
-# --------------------------------------------------
-# 2. Define the expected AI response structure
-# --------------------------------------------------
+
+#Define the expected AI response structure
+
 
 class TextAnalysis(BaseModel):
     topic: str
@@ -28,9 +28,9 @@ class TextAnalysis(BaseModel):
     summary: str
 
 
-# --------------------------------------------------
-# 3. Reusable AI analysis function
-# --------------------------------------------------
+
+#Reusable AI analysis function
+
 
 def analyze_text(text):
 
@@ -84,9 +84,8 @@ Text:
         return None
 
 
-# --------------------------------------------------
-# 4. Main application
-# --------------------------------------------------
+
+#Main application
 
 def main():
 
@@ -106,9 +105,9 @@ def main():
         print("\nThe text could not be analyzed.")
 
 
-# --------------------------------------------------
-# 5. Start the application
-# --------------------------------------------------
+
+#Start the application
+
 
 if __name__ == "__main__":
     main()
