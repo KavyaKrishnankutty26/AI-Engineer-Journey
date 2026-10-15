@@ -3,15 +3,15 @@ import sys
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 
-# : Import messages needed for tool calling
+#Import messages needed for tool calling
 from langchain_core.messages import HumanMessage, ToolMessage
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 
-# --------------------------------------------------
-# 1. Load environment variables
-# --------------------------------------------------
+
+#Load environment variables
+
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -22,18 +22,18 @@ api_key = os.getenv("GEMINI_API_KEY")
 print("API key loaded:", bool(api_key))
 
 
-# --------------------------------------------------
-# 2. Create the Gemini model
-# --------------------------------------------------
+
+#Create the Gemini model
+
 
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite"
 )
 
 
-# --------------------------------------------------
-# 3. Create a LangChain tool
-# --------------------------------------------------
+
+#Create a LangChain tool
+
 
 @tool
 def add_numbers(a: int, b: int) -> int:
@@ -41,18 +41,18 @@ def add_numbers(a: int, b: int) -> int:
     return a + b
 
 
-# --------------------------------------------------
-# 4. Give the tool to Gemini
-# --------------------------------------------------
+
+#Give the tool to Gemini
+
 
 model_with_tools = model.bind_tools(
     [add_numbers]
 )
 
 
-# --------------------------------------------------
-# 5. Test the tool locally
-# --------------------------------------------------
+
+#Test the tool locally
+
 
 local_result = add_numbers.invoke(
     {
@@ -65,9 +65,9 @@ print("\nLocal tool result:")
 print(local_result)
 
 
-# --------------------------------------------------
-# 6.  Create the user's message
-# --------------------------------------------------
+
+#Create the user's message
+
 
 messages = [
     HumanMessage(
@@ -76,9 +76,9 @@ messages = [
 ]
 
 
-# --------------------------------------------------
-# 7.  Ask Gemini to use the tool
-# --------------------------------------------------
+
+#Ask Gemini to use the tool
+
 
 try:
 
@@ -93,17 +93,16 @@ try:
     print(response.tool_calls)
 
 
-    # --------------------------------------------------
-    # 8.  Add Gemini's response to the conversation
-    # --------------------------------------------------
+    
+    #Add Gemini's response to the conversation
+    
 
     messages.append(response)
 
 
-    # --------------------------------------------------
-    # 9. Check if Gemini requested a tool
-    # --------------------------------------------------
-
+    
+    #Check if Gemini requested a tool
+   
     if response.tool_calls:
 
         tool_call = response.tool_calls[0]
@@ -115,10 +114,9 @@ try:
         print(tool_call["args"])
 
 
-        # --------------------------------------------------
-        # 10. Execute the requested tool
-        # --------------------------------------------------
-
+        
+        #Execute the requested tool
+        
         tool_result = add_numbers.invoke(
             tool_call["args"]
         )
@@ -127,10 +125,9 @@ try:
         print(tool_result)
 
 
-        # --------------------------------------------------
-        # 11.  Create a ToolMessage
-        # --------------------------------------------------
-
+         
+        #Create a ToolMessage
+        
         tool_message = ToolMessage(
             content=str(tool_result),
             tool_call_id=tool_call["id"]
@@ -139,9 +136,9 @@ try:
         messages.append(tool_message)
 
 
-        # --------------------------------------------------
-        # 12. Send the tool result back to Gemini
-        # --------------------------------------------------
+        
+        #Send the tool result back to Gemini
+        
 
         final_response = model_with_tools.invoke(
             messages
