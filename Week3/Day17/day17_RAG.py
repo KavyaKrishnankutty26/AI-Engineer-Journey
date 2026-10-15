@@ -9,27 +9,27 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 
 
-# --------------------------------------------------
-# 1. Load environment variables
-# --------------------------------------------------
+
+#Load environment variables
+
 
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 
 
-# --------------------------------------------------
-# 2. Create the embedding model
-# --------------------------------------------------
+
+#Create the embedding model
+
 
 embedding_model = SentenceTransformer(
     "all-MiniLM-L6-v2"
 )
 
 
-# --------------------------------------------------
-# 3. Load the document
-# --------------------------------------------------
+
+#Load the document
+
 
 file_path = Path(__file__).parent / "document.txt"
 
@@ -38,9 +38,9 @@ text = file_path.read_text(
 )
 
 
-# --------------------------------------------------
-# 4. Split the document into simple chunks
-# --------------------------------------------------
+
+#Split the document into simple chunks
+
 
 chunks = [
     chunk.strip()
@@ -52,36 +52,36 @@ chunks = [
 print("Number of chunks:", len(chunks))
 
 
-# --------------------------------------------------
-# 5. Create embeddings for the chunks
-# --------------------------------------------------
+
+#Create embeddings for the chunks
+
 
 chunk_embeddings = embedding_model.encode(
     chunks
 )
 
 
-# --------------------------------------------------
-# 6. Create FAISS index
-# --------------------------------------------------
+
+#Create FAISS index
+
 
 dimension = chunk_embeddings.shape[1]
 
 index = faiss.IndexFlatL2(dimension)
 
 
-# --------------------------------------------------
-# 7. Store embeddings in FAISS
-# --------------------------------------------------
+
+#Store embeddings in FAISS
+
 
 index.add(
     np.array(chunk_embeddings).astype("float32")
 )
 
 
-# --------------------------------------------------
-# 8. Get user's question
-# --------------------------------------------------
+
+#Get user's question
+
 
 question = input(
     "\nAsk a question about the document: "
@@ -93,18 +93,18 @@ if not question:
     exit()
 
 
-# --------------------------------------------------
-# 9. Convert question into an embedding
-# --------------------------------------------------
+
+#Convert question into an embedding
+
 
 question_embedding = embedding_model.encode(
     [question]
 )
 
 
-# --------------------------------------------------
-# 10. Retrieve the most relevant chunks
-# --------------------------------------------------
+
+#Retrieve the most relevant chunks
+
 
 distances, indices = index.search(
     np.array(question_embedding).astype("float32"),
@@ -112,9 +112,8 @@ distances, indices = index.search(
 )
 
 
-# --------------------------------------------------
-# 11. Build the context
-# --------------------------------------------------
+
+#Build the context
 
 retrieved_chunks = []
 
@@ -134,18 +133,18 @@ print("\nRetrieved context:")
 print(context)
 
 
-# --------------------------------------------------
-# 12. Create Gemini model
-# --------------------------------------------------
+
+#Create Gemini model
+
 
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite"
 )
 
 
-# --------------------------------------------------
-# 13. Create RAG prompt
-# --------------------------------------------------
+
+#Create RAG prompt
+
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -179,16 +178,15 @@ Question:
 )
 
 
-# --------------------------------------------------
-# 14. Create the chain
-# --------------------------------------------------
+
+#Create the chain
+
 
 chain = prompt | model
 
 
-# --------------------------------------------------
-# 15. Send context + question to Gemini
-# --------------------------------------------------
+
+#Send context + question to Gemini
 
 response = chain.invoke(
     {
@@ -198,9 +196,9 @@ response = chain.invoke(
 )
 
 
-# --------------------------------------------------
-# 16. Display the final answer
-# --------------------------------------------------
+
+#Display the final answer
+
 
 print("\nAI Answer:")
 print(response.content)
