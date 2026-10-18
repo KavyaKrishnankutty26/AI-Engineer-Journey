@@ -102,4 +102,6 @@ The last question can help test whether the application avoids answering when th
 
 ## Author
 
-AI Engineer learning portfolio project.
+Kavya Krishnankutty
+
+Aspiring AI Engineer | Data Engineering | Generative AI
