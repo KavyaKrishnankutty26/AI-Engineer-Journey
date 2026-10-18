@@ -1,0 +1,8 @@
+
+faiss-cpu
+numpy
+python-dotenv
+langchain-community
+langchain-text-splitters
+langchain-google-genai
+sentence-transformers

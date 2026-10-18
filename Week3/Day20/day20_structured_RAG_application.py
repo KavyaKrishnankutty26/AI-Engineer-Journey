@@ -1,3 +1,18 @@
+"""
+AI Document Learning Assistant — RAG Application
+
+Purpose:
+Answer user questions using information retrieved
+from a supplied text document.
+
+Main components:
+- Document loading and text chunking
+- Embedding generation using Sentence Transformers
+- Vector search using FAISS
+- Answer generation using Google Gemini
+- Basic error handling and source display
+"""
+
 import os
 from pathlib import Path
 
@@ -23,16 +38,20 @@ load_dotenv()
 # Load documents
 
 def load_documents(file_path):
+    try:
+        loader = TextLoader(
+          str(file_path),
+          encoding="utf-8"
+          )
+        documents = loader.load()
 
-    loader = TextLoader(
-        str(file_path),
-        encoding="utf-8"
-    )
+        return documents
 
-    documents = loader.load()
-
-    return documents
-
+    except FileNotFoundError:
+    
+        print("Error : Document file was not found.")
+        print("Please check the file file name and location")
+        return None
 
 
 # Create chunks
@@ -121,6 +140,9 @@ def retrieve_documents(
         indices[0]
     ):
 
+        if index_number<0:
+            continue
+
         if distance <= threshold:
 
             document = chunks[index_number]
@@ -141,28 +163,49 @@ def generate_answer(
     model
 ):
 
-    context = "\n\n".join(
-        document.page_content
-        for document in retrieved_documents
+    # Build context with source information
+    context_parts = []
+
+    for document in retrieved_documents:
+
+        source = document.metadata.get(
+          "source",
+          "Unknown source"
     )
+
+    chunk_id = document.metadata.get(
+        "chunk_id",
+        "Unknown chunk"
+    )
+
+    context_parts.append(
+        f"Source: {source}\n"
+        f"Chunk ID: {chunk_id}\n"
+        f"Content: {document.page_content}"
+    )
+
+
+    context = "\n\n".join(context_parts)
 
     prompt = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
                 """
-You are a helpful AI assistant.
+You are a helpful AI assistant that answers questions
+about documents.
 
-Answer the user's question using ONLY
-the provided context.
-
-If the answer cannot be found in the context,
-say:
-
-"The information is not available in the document."
-
-Do not invent information.
-"""
+Rules:
+1. Answer using ONLY the provided context.
+2. Do not use outside knowledge to fill missing details.
+3. If the context does not contain enough information,
+   say: "The information is not available in the document."
+4. If only part of the answer is supported, explain
+   what the context confirms and what is missing.
+5. Do not invent facts, names, numbers, or explanations.
+6. Keep the answer clear and directly related to
+   the user's question.
+ """
             ),
             (
                 "human",
@@ -178,17 +221,24 @@ Question:
     )
 
     chain = prompt | model
+    try:
 
-    response = chain.invoke(
+        response = chain.invoke(
         {
             "context": context,
             "question": question
         }
-    )
+        )
 
-    return response
+        return response
 
+    except Exception as e:
+         print("\nError:Unable to generate an AI answer")
+         print("Please check your internet connectionp and try again later")
 
+         return None
+         print("\nTechnical Error",e)
+         return None
 
 #  Main application
 
@@ -202,11 +252,20 @@ def main():
     documents = load_documents(
         file_path
     )
+    if documents is None:
+       return
 
     print(
         "Documents loaded:",
         len(documents)
     )
+
+    if not any(
+        document.page_content.strip()
+        for document in documents
+        ):
+        print("Error, The document containing no text")
+        return
 
 
     # Create chunks
@@ -289,11 +348,30 @@ def main():
         model
     )
 
+    if response is None:
+        return
 
     # Display answer
     print("\nAI Answer:")
     print(response.content)
 
+    
+# Display the sources used for retrieval
+    print("\nSources used:")
+
+    for document in retrieved_documents:
+
+      source = document.metadata.get(
+        "source",
+        "Unknown source"
+    )
+
+    chunk_id = document.metadata.get(
+        "chunk_id",
+        "Unknown chunk"
+    )
+
+    print(f"- {source} (Chunk {chunk_id})")
 
 
 # Run application
